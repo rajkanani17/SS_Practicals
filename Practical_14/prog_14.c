@@ -15,7 +15,7 @@ int main(int argv, char *argc[])
 {
     struct stat s;
     int o = lstat(argc[1], &s);
-    printf("File type:                ");
+    printf("File type: ");
 
     switch (s.st_mode & S_IFMT)
     {
