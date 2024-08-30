@@ -33,6 +33,9 @@ int main(int argv, char *argc[])
 	kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Practical_10$ ./prog_10 file_10.txt
 	20
 	30
-	kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Practical_10$ cat file_10.txt
-	ABCDEFGHIJABCDEFGHIJ
+	kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Practical_10$ od -c file_10.txt
+	0000000   A   B   C   D   E   F   G   H   I   J  \0  \0  \0  \0  \0  \0
+	0000020  \0  \0  \0  \0   A   B   C   D   E   F   G   H   I   J
+	0000036
+
 */
