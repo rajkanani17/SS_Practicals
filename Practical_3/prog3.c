@@ -11,22 +11,20 @@
 int main()
 {
 	const char *filename = "file3.txt";
-	mode_t mode = 0644;
 
-	int fd = creat(filename, mode);
+	int fd = creat(filename, O_CREAT|S_IRWXU);
 	if(fd == -1){
 		perror("create");
 		exit(EXIT_FAILURE);
 	}
 
 	printf("File descriptor for '%s' : %d\n", filename, fd);
-
-	if(close(fd) == -1){
-		perror("close");
-		exit(EXIT_FAILURE);
-	}
-
 	return 0;
-
 }
+
+/*	OUTPUT:
+	kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Practical_3$ ./prog3
+	File descriptor for 'file3.txt' : 3
+
+*/
 

@@ -36,3 +36,20 @@ int main(int argv,char *argc[])
 	printf("Last status change time = %s", ctime(&(s.st_ctim).tv_sec));
 	return 0;
 }
+
+/*	OUTPUT :
+	kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Practical_9$ ./prog_9 file_9
+	id of device=66309
+	inode = 6330482
+	file type and mode = 33204
+	number of harldink = 1
+	user id = 1000
+	group id = 1000
+	device id = 0
+	total size in bytes = 0
+	Block size of filesystem = 4096
+	Number of block = 0
+	Last access time = Fri Aug 30 09:46:53 2024
+	Last modified time = Fri Aug 30 09:46:53 2024
+	Last status change time = Fri Aug 30 09:46:53 2024
+*/

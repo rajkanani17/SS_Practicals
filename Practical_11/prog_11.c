@@ -24,3 +24,13 @@ int main(int argv,char *argc[]){
 	
 	return 0;
 }
+
+/*	OUTPUT:
+	kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Practical_11$ ./prog_11 file_11.txt
+	kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Practical_11$ cat file_11.txt
+	Hi, written using original file descriptor
+	Hi, USER Written using dup() file descriptor
+	Hi, USER written using dup2() file descriptor
+	Hi, USER written using fcntl() file descriptor
+
+*/

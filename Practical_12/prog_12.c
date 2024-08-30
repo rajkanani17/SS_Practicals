@@ -39,3 +39,9 @@ int main(int argv,char *argc[]) {
     close(fd);
     return 0;
 }
+
+/*  OUTPUT  :
+    kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Practical_12$ ./prog_12 file_12.txt
+    File is opened in read-only mode.
+
+*/

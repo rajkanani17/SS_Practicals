@@ -7,7 +7,7 @@
 #include<stdio.h>
 int main()
 {
-	char *f = "file_8";
+	char *f = "file_8.txt";
 	FILE *file = fopen(f, "r");
 	
 	if(file == NULL){
@@ -25,3 +25,11 @@ int main()
 
 	return 0;
 }
+
+/*	OUTPUT :
+	kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Practical_8$ ./prog_8
+	My
+	Name
+	Is
+	Raj
+*/

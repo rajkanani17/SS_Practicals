@@ -45,3 +45,9 @@ int main(int argv, char *argc[])
         break;
     }
 }
+
+/*  OUTPUT :
+    kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Practical_14$ ./prog_14 file_14.txt
+    File type: regular file
+
+*/

@@ -28,3 +28,11 @@ int main(int argv, char *argc[])
 	printf("%d\n",op);
 	return 0;
 }
+
+/*	OUTPUT :
+	kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Practical_10$ ./prog_10 file_10.txt
+	20
+	30
+	kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Practical_10$ cat file_10.txt
+	ABCDEFGHIJABCDEFGHIJ
+*/

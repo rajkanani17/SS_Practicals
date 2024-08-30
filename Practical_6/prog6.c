@@ -26,3 +26,13 @@ int main()
 
 	return 0;
 }
+
+/*	OUTPUT :
+	kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Practical_6$ ./prog6
+	Hi, How are you ?
+	Hi, How are you ?
+
+
+	I am fine.
+	I am fine.
+*/

@@ -20,3 +20,9 @@ int main(int argc, char *argv[])
 	}
 	return 0;
 }
+
+/*	OUTPUT:
+	kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Practical_1$ ./prog1_c fifofile
+	Fifo special file is created successfully
+
+*/

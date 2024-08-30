@@ -18,14 +18,21 @@ void main()
     int o = select(1, &fd, NULL, NULL, &t);
     if (o == -1)
     {
-        printf("Error occured");
+        printf("Error occured\n");
     }
     else if (o == 0)
     {
-        printf("Time out");
+        printf("Time out\n");
     }
     else
     {
-        printf("Data entered");
+        printf("Data entered\n");
     }
 }
+
+/*  OUTPUT :
+    kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Practical_13$ ./prog_13
+    Hello how are you
+    Data entered
+
+*/
