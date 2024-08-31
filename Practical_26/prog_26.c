@@ -21,7 +21,10 @@ int main() {
 }
 
 /*  OUTPUT :
+    kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Practical_26$ gcc -o a.out external.c
+    kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Practical_26$ gcc -o prog_26 prog_26.c
     kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Practical_26$ ./prog_26
-    passing value as string
+    This string is passed as value
+
 
 */
