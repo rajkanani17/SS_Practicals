@@ -27,16 +27,15 @@ void main()
     int semctlStatus;
     int semopStatus;
 
-    // Defines a semaphore's structure
+    
     union semun
     {
-        int val;               // Value of the semaphore
-        struct semid_ds *buf;  /* Buffer for IPC_STAT, IPC_SET */
-        unsigned short *array; /* Array for GETALL, SETALL */
-        struct seminfo *__buf; /* Buffer for IPC_INFO (Linux-specific) */
+        int val;               
+        struct semid_ds *buf;  
+        unsigned short *array; 
+        struct seminfo *__buf; 
     } semSet;
 
-    // semaphore key
     semKey = ftok(".", 335);
     if (semKey == -1)
     {
@@ -44,17 +43,17 @@ void main()
         _exit(1);
     }
 
-    semIdentifier = semget(semKey, 1, 0); // Get the semaphore if it exists
+    semIdentifier = semget(semKey, 1, 0); 
     if (semIdentifier == -1)
     {
-        semIdentifier = semget(semKey, 1, IPC_CREAT | 0700); // Create a new semaphore
+        semIdentifier = semget(semKey, 1, IPC_CREAT | 0700); 
         if (semIdentifier == -1)
         {
             perror("Error while creating semaphore!");
             _exit(1);
         }
 
-        semSet.val = 1; // Set a binary semaphore
+        semSet.val = 1; 
         semctlStatus = semctl(semIdentifier, 0, SETVAL, semSet);
         if (semctlStatus == -1)
         {
@@ -63,13 +62,12 @@ void main()
         }
     }
 
-    struct sembuf semOp; // Defines the operation on the semaphore
+    struct sembuf semOp; 
     semOp.sem_num = 0;
     semOp.sem_flg = 0;
 
     printf("entering to obtain lock on the critical section\n");
 
-    // Use semaphore to lock the critical section
     semOp.sem_op = -1;
     semopStatus = semop(semIdentifier, &semOp, 1);
     if (semopStatus == -1)
@@ -80,16 +78,12 @@ void main()
 
     printf("Obtained lock on critical section!\n");
     printf("Now entering critical section!\n");
-    // =========== Start of Critical Section ===========
 
     printf("write in shared memory\n");
     scanf("%[^\n]", shmPointer);
     printf("data from shared memory : %s\n", shmPointer);
     printf("entering to exit from critical section!\n");
 
-    // =========== End of Critical Section =============
-
-    // Use semaphore to unlock the critical section
     semOp.sem_op = 1;
     semopStatus = semop(semIdentifier, &semOp, 1);
     if (semopStatus == -1)
@@ -108,3 +102,15 @@ void main()
         _exit(1);
     }
 }
+/*  Output :
+    kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Hands_On-List_II/Practical_32$ gcc -o 32d 32d.c
+    kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Hands_On-List_II/Practical_32$ ./32d
+    entering to obtain lock on the critical section
+    Obtained lock on critical section!
+    Now entering critical section!
+    write in shared memory
+
+    data from shared memory : 
+    entering to exit from critical section!
+    deleting binary semaphore
+*/
