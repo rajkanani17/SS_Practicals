@@ -116,3 +116,27 @@ void main()
         _exit(1);
     }
 }
+/*  Output :
+    ========================= Process 1 in critical section ====================================
+    kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Hands_On-List_II/Practical_32$ ./32c
+    entering to obtain lock on the critical section
+    Obtained lock on critical section!
+    inside Critical section
+    ticket number is : 1	 
+    ticket number is stored in file
+
+    ======================== Process 2 in critical section ====================================
+    kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Hands_On-List_II/Practical_32$ ./32c
+    entering to obtain lock on the critical section
+
+    Obtained lock on critical section!
+    inside Critical sectionticket number is : 2	 
+    ticket number is stored in file
+
+    ======================== Process 3 unable to enter critical section ========================
+    kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Hands_On-List_II/Practical_32$ ./32c
+    entering to obtain lock on the critical section
+
+
+*/
+

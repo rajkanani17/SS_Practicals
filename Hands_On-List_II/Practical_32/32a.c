@@ -10,73 +10,138 @@ Description : Write a program to implement semaphore to protect any critical sec
               d. remove the created semaphore
 ============================================================================
 */
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <fcntl.h>
-#include <sys/ipc.h>
-#include <sys/sem.h>
+#include<sys/ipc.h>
+#include<sys/sem.h>
+#include<sys/types.h>
+#include<sys/stat.h>
+#include<fcntl.h>
+#include<stdlib.h>
+#include<unistd.h>
+#include<stdio.h>
 
-typedef union semun
+int main()
 {
-    int val;                   // val for set val /* 1 for binary else > 1 for Counting Semaphore */
-    struct semid_ds *buf;      // Data structure describing a set of semaphores.
-    unsigned short int *array; // array for GETALL, SETALL
-    struct seminfo *__buf;     // Buffer for IPC_INFO
-} semun;
-int main(int argc, char *argv[])
-{
+    char *ticketFile = "./ticketFile.txt";
 
-    semun arg;
-    key_t key = ftok(".", 331);
-    int semid = semget(key, 1, 0); // if semaphore already exists
-    if (semid == -1)
-    {
-        semid = semget(key, 1, IPC_CREAT | 0700);
-        arg.val = 1;                   // 1 for binary
-        semctl(semid, 0, SETVAL, arg); // semaphore number 0// set val of binary semaphore to 0;
-    }
-
-    struct sembuf sem_op; // for semaphore operation
-    sem_op.sem_num = 0;
-    sem_op.sem_flg = 0;
-
-    printf("Entering critical zone\n");
-
-    // use semaphore to lock critical section
-    sem_op.sem_op = -1;
-    semop(semid, &sem_op, 1);
-
-    // critical zone;
-    printf("inside Critical section");
-    getchar();
+    int fileDescriptor;
+    int readBytes, writeBytes;
+    int lseekOffset;
     int data;
-    int fd = open("./17_ticket.txt", O_RDWR | O_CREAT, S_IRWXU);
-    if (fd == -1)
+
+    int semKey;
+    int semIdentifier;
+    int semctlStatus; 
+    int semopStatus;
+
+    fileDescriptor = open(ticketFile, O_CREAT | O_RDWR, S_IRWXU);
+    if (fileDescriptor == -1)
     {
-        perror("Error while opening file!");
-        return 0;
+        printf("Error while creating / opening the ticket file!\n");
+        exit(0);
     }
 
-    int n = read(fd, &data, sizeof(data));
-    if (n == 0)
+    union semun
     {
-        data = 1;
+        int val;
+        struct semid_ds *buf;
+        unsigned short *array;
+        struct seminfo *__buf;
+    } semSet;
+
+    semKey = ftok(".", 331);
+    if (semKey == -1)
+    {
+        printf("Error while computing key!\n");
+        exit(1);
     }
+
+    semIdentifier = semget(semKey, 1, 0);
+    if (semIdentifier == -1)
+    {
+        semIdentifier = semget(semKey, 1, IPC_CREAT | 0700);
+        if (semIdentifier == -1)
+        {
+            printf("Error while creating semaphore!\n");
+            exit(1);
+        }
+
+        semSet.val = 1;
+        semctlStatus = semctl(semIdentifier, 0, SETVAL, semSet);
+        if (semctlStatus == -1)
+        {
+            printf("Error while initializing a binary sempahore!\n");
+            exit(1);
+        }
+    }
+
+    struct sembuf semOp;
+    semOp.sem_num = 0;
+    semOp.sem_flg = 0;
+
+    printf("Press enter to obtain lock on the critical section\n");
+    getchar();
+
+    semOp.sem_op = -1;
+    semopStatus = semop(semIdentifier, &semOp, 1);
+    if (semopStatus == -1)
+    {
+        printf("Error while operating on semaphore!\n");
+        exit(1);
+    }
+    
+    printf("Obtained lock on critical section!\n");
+    printf("Now entering critical section!\n");
+
+    readBytes = read(fileDescriptor, &data, sizeof(data));
+    if (readBytes == -1)
+    {
+        printf("Error while reading from ticket file!\n");
+        exit(0);
+    }
+    else if (readBytes == 0)
+        data = 1;
     else
     {
         data += 1;
-        lseek(fd, 0, SEEK_SET); // reset seek
+        lseekOffset = lseek(fileDescriptor, 0, SEEK_SET);
+        if (lseekOffset == -1)
+        {
+            printf("Error while seeking!\n");
+            exit(0);
+        }
     }
-    write(fd, &data, sizeof(data));
-    printf("ticket number is : %d\t \n", data);
-    printf("ticket number is stored in file\n");
 
-    printf("out of critical zone\n");
+    writeBytes = write(fileDescriptor, &data, sizeof(data));
+    if (writeBytes == -1)
+    {
+        printf("Error while writing to ticket file!\n");
+        exit(1);
+    }
 
-    // use semaphore to unlock critical section
-    sem_op.sem_op = 1;
-    semop(semid, &sem_op, 1);
+    printf("Your ticker number is - %d\n", data);
+
+    printf("Press enter to exit from critical section!\n");
+    getchar();
+
+    semOp.sem_op = 1;
+    semopStatus = semop(semIdentifier, &semOp, 1);
+    if (semopStatus == -1)
+    {
+        printf("Error while operating on semaphore!\n");
+        exit(1);
+    }
+    close(fileDescriptor);
+
     return 0;
 }
+/*  Output :
+    kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Hands_On-List_II/Practical_32$ gcc -o 32a 32a.c
+    kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Hands_On-List_II/Practical_32$ ./32a
+    Press enter to obtain lock on the critical section
+
+    Obtained lock on critical section!
+    Now entering critical section!
+    Your ticker number is - 1
+    Press enter to exit from critical section!
+
+*/
