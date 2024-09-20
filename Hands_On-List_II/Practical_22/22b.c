@@ -12,11 +12,12 @@ Description : Write a program to wait for data to be written into FIFO within 10
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 void main()
 {
     int f;
-    char *s = "./22-fifo";
+    char *s = "FIFO22";
     mkfifo(s, S_IRWXU);
     f = open(s, O_NONBLOCK | O_WRONLY);
 
@@ -32,3 +33,9 @@ void main()
     write(f, st, l);
     close(f);
 }
+/*  Output :
+    kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Hands_On-List_II/Practical_22$ ./22b
+    enter message
+    Hello
+
+*/
