@@ -8,75 +8,91 @@ Description : Write a program to create a concurrent server.
               b. use pthread_create
 ============================================================================
 */
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/ip.h>
-#include <stdio.h>
-#include <unistd.h>
-void main()
+#include<sys/types.h>
+#include<sys/socket.h>
+#include<netinet/ip.h>
+#include<stdio.h>
+#include<unistd.h>
+#include<stdlib.h>
+
+int main()
 {
-    int socktd = socket(AF_INET, SOCK_STREAM, 0);
-    if (socktd == -1)
+    int socketFileDescriptor, connectionFileDescriptor;
+    int bindStatus;
+    int listenStatus;
+    int clientSize;
+
+    struct sockaddr_in address, client;
+
+    int readBytes, writeBytes;
+    char dataFromClient[1024] = {'\0'};
+
+    socketFileDescriptor = socket(AF_INET, SOCK_STREAM, 0);
+    if (socketFileDescriptor == -1)
     {
-        perror("Erroe when creating socket");
+        printf("Error while creating socket!\n");
+        exit(0);
     }
-    printf("server Socket created\n");
+    printf("Server side socket successfully created!\n");
 
-    // server info
-    struct sockaddr_in server, client;
-    server.sin_addr.s_addr = htonl(INADDR_ANY); // host to network long
-    server.sin_family = AF_INET;
-    server.sin_port = htons(8080);
+    address.sin_addr.s_addr = htonl(INADDR_ANY);
+    address.sin_family = AF_INET;
+    address.sin_port = htons(8080);
 
-    int bindS = bind(socktd, (struct sockaddr *)&server, sizeof(server));
-    if (bindS == -1)
+    bindStatus = bind(socketFileDescriptor, (struct sockaddr *)&address, sizeof(address));
+    if (bindStatus == -1)
     {
-        perror("Error while binding name to socket!");
-        _exit(0);
+        printf("Error while binding name to socket!\n");
+        exit(0);
     }
-    printf("Binding to server socket was successful!\n");
+    printf("Binding to socket was successful!\n");
 
-    // listen for connection
-    int listenS = listen(socktd, 3);
-    if (listenS == -1)
+    listenStatus = listen(socketFileDescriptor, 2);
+    if (listenStatus == -1)
     {
-        perror("Error while trying to listen to Connections");
-        _exit(0);
+        printf("Error while trying to listen for connections!\n");
+        exit(0);
     }
-    printf("Listning from Connection \n");
-
+    printf("Now listening for connections on a socket!\n");
     while (1)
     {
-        int client_size = (int)sizeof(client);
-        int connectionfd = accept(socktd, (struct sockaddr *)&client, &client_size);
-        if (connectionfd == -1)
-        {
-            perror("Error while accepting Connection\n");
-            _exit(0);
-        }
+        clientSize = (int)sizeof(client);
+        connectionFileDescriptor = accept(socketFileDescriptor, (struct sockaddr *)&client, &clientSize);
+        if (connectionFileDescriptor == -1)
+            printf("Error while accepting a connection!\n");
         else
         {
             if (fork() == 0)
             {
-                // In child
-                char buf[100];
-                printf("Write massage form server to client: \n");
-                scanf("%[^\n]", buf);
-                // write fron server to connection fd
-                write(connectionfd, buf, sizeof(buf));
+                writeBytes = write(connectionFileDescriptor, "Hello from Server!\n", 27);
+                if (writeBytes == -1)
+                    printf("Error while writing to network via socket!\n");
+                else
+                    printf("Data sent to client!\n");
 
-                read(connectionfd, buf, 100);
-                printf("Data from client : %s\n",buf);
+                readBytes = read(connectionFileDescriptor, dataFromClient, 100);
+                if (readBytes == -1)
+                    printf("Error while reading from network via socket!\n");
+                else
+                    printf("Data from client: %s\n", dataFromClient);
             }
             else
             {
-                // parent
-                // close connectionfd for client
-                close(connectionfd);
+                close(connectionFileDescriptor);
             }
         }
     }
 
-    // closing socket
-    close(socktd);
+    close(socketFileDescriptor);
+
+    return 0;
 }
+/*  Output :
+    kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Hands_On-List_II/Practical_34$ ./34a_server
+    Server side socket successfully created!
+    Binding to socket was successful!
+    Now listening for connections on a socket!
+    Data sent to client!
+    Data from client: Hello from client
+
+*/

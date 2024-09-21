@@ -8,49 +8,68 @@ Description : Write a program to create a concurrent server.
               b. use pthread_create
 ============================================================================
 */
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/ip.h>
-#include <stdio.h>
-#include <unistd.h>
-void main()
-{
-    int socktd = socket(AF_INET, SOCK_STREAM, 0);
-    if (socktd == -1)
-    {
-        perror("Erroe when creating socket");
-        _exit(0);
-    }
-    printf("Socket created\n");
+#include<sys/types.h>
+#include<sys/socket.h>
+#include<netinet/ip.h>
+#include<stdio.h>
+#include<unistd.h>
+#include<stdlib.h>
 
-    // assigning server info
+int main()
+{
+    int socketFileDescriptor;
+    int connectStatus;
+
     struct sockaddr_in address;
-    address.sin_addr.s_addr = htonl(INADDR_ANY); // host to network short
+
+    int readBytes, writeBytes;
+    char dataFromServer[1024] = {'\0'};
+
+    socketFileDescriptor = socket(AF_INET, SOCK_STREAM, 0);
+    if (socketFileDescriptor == -1)
+    {
+        printf("Error while creating socket!\n");
+        exit(0);
+    }
+    printf("Client side socket successfully created!\n");
+
+    address.sin_addr.s_addr = htonl(INADDR_ANY);
     address.sin_family = AF_INET;
     address.sin_port = htons(8080);
 
-    // make connection to the server
-    int connectionS = connect(socktd, (struct sockaddr *)&address, sizeof(address));
-
-    if (connectionS == -1)
+    connectStatus = connect(socketFileDescriptor, (struct sockaddr *)&address, sizeof(address));
+    if (connectStatus == -1)
     {
-        perror("Error while establishing Connection\n");
-        _exit(0);
+        printf("Error while connecting to server!\n");
+        exit(0);
     }
+    printf("Client to server connection successfully established!\n");
 
-    printf("Connection with server established\n");
+    readBytes = read(socketFileDescriptor, dataFromServer, 100);
 
-    char buf[100];
-    // read fron server
-    read(socktd, buf, 100);
-    printf("Data from server: %s\n", buf);
+    if (readBytes == -1)
+        printf("Error while reading from network via socket!\n");
+    else
+        printf("Data from server: %s\n", dataFromServer);
 
-    printf("Write massage for server: \n");
-    scanf("%[^\n]", buf);
+    writeBytes = write(socketFileDescriptor, "Hello from client\n", 19);
+    if (writeBytes == -1)
+        printf("Error while writing to network via socket!\n");
+    else
+        printf("Data sent to server!\n");
+    
 
-    write(socktd, buf, sizeof(buf));
-    printf("Data sent to server\n");
+    close(socketFileDescriptor);
 
-    // closing socket
-    close(socktd);
+    return 0;
 }
+/*  Output :
+    kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Hands_On-List_II/Practical_34$ gcc -o 34b_client 34b_client.c
+    kanani-raj@kanani-raj-HP-Laptop-15s-du1xxx:~/Practicals/Hands_On-List_II/Practical_34$ ./34b_client
+    Client side socket successfully created!
+    Client to server connection successfully established!
+    Data from server: Hello from Server Program
+
+    Data sent to server!
+
+*/
